@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- VIEWS -->
+
+    <record id="view_academic_advising_session_tree" model="ir.ui.view">
+        <field name="name">academic.advising.session.tree</field>
+        <field name="model">academic.advising.session</field>
+        <field name="arch" type="xml">
+            <tree string="Academic Advising Sessions" sample="1">
+                <field name="date"/>
+                <field name="academic_advisor_id"/>
+                <field name="subject"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_academic_advising_session_form" model="ir.ui.view">
+        <field name="name">academic.advising.session.form</field>
+        <field name="model">academic.advising.session</field>
+        <field name="arch" type="xml">
+            <form string="Academic Advising Session">
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <group name="session_date">
+                        <field name="date" decoration-danger="date &lt; today" decoration-warning="date == today" decoration-success="date &gt; today"/>
+                    </group>
+                    <group name="session_times">
+                        <group name="session_start_time">
+                            <field name="start_time" widget="float_time"/>
+                        </group>
+                        <group name="session_end_time">
+                            <field name="end_time" widget="float_time"/>
+                        </group>
+                    </group>
+                    <group name="session_academic_advisor">
+                        <field name="academic_advisor_id" domain="[('company_id', '=', company_id), ('employee_type', '=', 'teacher'), ('academic_advisee_ids', '!=', False)]" options="{'no_create': True}"/>
+                    </group>
+                    <notebook>
+                        <page string="Session Info" name="session_info">
+                            <group name="session_subject_and_recommendations">
+                                <field name="subject"/>
+                                <field name="recommendations"/>
+                            </group>
+                        </page>
+                        <page string="Students" name="students">
+                            <field name="student_ids" domain="[('is_student', '=', True), ('academic_advisor_id', '=', academic_advisor_id)]" options="{'no_open': True}" context="{'default_company_id': company_id, 'tree_view_ref': 'sis_core.view_sis_res_partner_tree', 'form_view_ref': 'sis_core.view_sis_res_partner_form'}">
+                                <tree string="Students" create="0" default_order="department_id, academic_program_id, level, section_id, internal_reference">
+                                    <field name="name"/>
+                                    <field name="internal_reference"/>
+                                    <field name="national_id"/>
+                                    <field name="department_id"/>
+                                    <field name="academic_program_id"/>
+                                    <field name="level"/>
+                                    <field name="section_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="academic_advising_session_view_search" model="ir.ui.view">
+        <field name="name">academic.advising.session.view.search</field>
+        <field name="model">academic.advising.session</field>
+        <field name="arch" type="xml">
+            <search string="Search Academic Advising Sessions">
+                <field name="academic_advisor_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Academic Advisor" name="academic_advisor" domain="[]" context="{'group_by': 'academic_advisor_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTIONS (WINDOW) -->
+
+    <record id="action_academic_advising_sessions" model="ir.actions.act_window">
+        <field name="name">Academic Advising Sessions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academic.advising.session</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="academic_advising_session_view_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[('company_id', 'in', context['allowed_company_ids'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new academic advising session!
+            </p>
+        </field>
+    </record>
+</odoo>

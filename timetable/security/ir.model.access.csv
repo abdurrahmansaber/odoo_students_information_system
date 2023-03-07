@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_timetable_period,timetable.period,model_timetable_period,,1,1,1,1
+access_timetable_line,timetable.line,model_timetable_line,,1,1,1,1
+access_timetable,timetable,model_timetable,,1,1,1,1

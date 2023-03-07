@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="sis_menu_root"
+              name="SIS"
+              sequence="10">
+
+        <menuitem id="student_menu"
+                  name="Students"
+                  sequence="10">
+
+            <menuitem id="menu_students"
+                      name="Students"
+                      action="action_sis_student_views"
+                      sequence="10"/>
+
+            <menuitem id="menu_archive"
+                      name="Archive"
+                      action="action_sis_student_archive_views"
+                      sequence="20"/>
+
+            <menuitem id="menu_attendance"
+                      name="Attendance"
+                      action="website_slides.slide_channel_partner_action"
+                      sequence="30"/>
+
+        </menuitem>
+
+        <menuitem id="course_menu"
+                  name="Courses"
+                  sequence="40">
+
+            <menuitem id="menu_courses"
+                      name="Courses"
+                      action="website_slides.slide_channel_action_overview"
+                      sequence="10"/>
+
+        </menuitem>
+
+        <menuitem id="menu_uis_config"
+                  name="Configuration"
+                  sequence="50">
+
+            <menuitem id="menu_settings"
+                      name="Settings"
+                      action="uis_core.action_uis_config_settings"
+                      sequence="10"/>
+
+            <menuitem id="college_menu"
+                      name="Colleges"
+                      sequence="20">
+
+                <menuitem id="menu_departments"
+                          name="Departments"
+                          action="uis_core.action_departments"
+                          sequence="10"/>
+
+                <menuitem id="menu_academic_programs"
+                          name="Academic Programs"
+                          action="uis_core.action_academic_programs"
+                          sequence="20"/>
+
+                <menuitem id="menu_sections"
+                          name="Sections"
+                          action="action_sections"
+                          sequence="30"/>
+
+            </menuitem>
+
+            <menuitem id="building_menu"
+                      name="Buildings"
+                      sequence="30">
+
+                <menuitem id="menu_buildings"
+                          name="Buildings"
+                          action="uis_core.action_buildings"
+                          sequence="10"/>
+
+                <menuitem id="menu_classrooms"
+                          name="Classrooms"
+                          action="uis_core.action_classrooms"
+                          sequence="20"/>
+
+            </menuitem>
+
+            <menuitem id="menu_teachers"
+                      name="Teachers"
+                      action="uis_core.action_uis_employee_views"
+                      sequence="50"/>
+
+        </menuitem>
+
+    </menuitem>
+
+</odoo>

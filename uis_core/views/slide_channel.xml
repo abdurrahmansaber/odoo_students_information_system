@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_slide_channel_form_add_course_basic_information" model="ir.ui.view">
+            <field name="name">view_slide_channel_form_add_course_basic_information</field>
+            <field name="model">slide.channel</field>
+            <field name="inherit_id" ref="website_slides.view_slide_channel_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//page[@name='content']" position="before">
+                    <page name="basic_info" string="Basic Information">
+                        <group>
+                            <group>
+                                <field name="company_id" invisible="1"/>
+                                <field name="code"/>
+                                <field name="theoretical_hours"/>
+                                <field name="practical_hours"/>
+                                <field name="exercise_hours"/>
+                                <field name="num_of_weeks"/>
+                                <field name="num_of_lectures"/>
+                            </group>
+                            <group>
+                                <field name="total_grade"/>
+                                <field name="final_exam_grade"/>
+                                <field name="mid_semester_grade"/>
+                                <field name="oral_grade"/>
+                                <field name="quizzes_total_grade"/>
+                                <field name="project_grade"/>
+                                <field name="assignments_grade"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <group>
+                        <field name="academic_program_id" domain="[('company_id', '=', company_id)]" options="{'no_quick_create': True, 'no_create_edit': True}"/>
+                        <field name="semester_ids" widget="many2many_tags" string="Semesters" options="{'no_quick_create': True, 'no_create_edit': True}"/>
+                        <field name="level"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="website_slides.slide_channel_action_overview" model="ir.actions.act_window">
+            <field name="domain">[('company_id', 'in', context['allowed_company_ids'])]</field>
+        </record>
+
+    </data>
+</odoo>

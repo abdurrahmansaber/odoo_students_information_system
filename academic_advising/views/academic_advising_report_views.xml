@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- VIEWS -->
+
+    <record id="view_academic_advising_report_tree" model="ir.ui.view">
+        <field name="name">academic.advising.report.tree</field>
+        <field name="model">academic.advising.report</field>
+        <field name="arch" type="xml">
+            <tree string="Academic Advising Reports" sample="1">
+                <field name="academic_advisor_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_academic_advising_report_form" model="ir.ui.view">
+        <field name="name">academic.advising.report.form</field>
+        <field name="model">academic.advising.report</field>
+        <field name="arch" type="xml">
+            <form string="Academic Advising Report">
+                <field name="company_id" invisible="1"/>
+                <sheet>
+                    <group name="report_academic_advisor">
+                        <field name="academic_advisor_id" domain="[('company_id', '=', company_id), ('employee_type', '=', 'teacher'), ('academic_advisee_ids', '!=', False)]" options="{'no_create': True}"/>
+                    </group>
+                    <notebook>
+                        <page string="General Grades of Students" name="students_grades">
+                            <group name="excellent_grade">
+                                <group name="count_excellent_grade">
+                                    <field name="count_excellent_grade"/>
+                                </group>
+                                <group name="percentage_excellent_grade">
+                                    <field name="percentage_excellent_grade" widget="percentage"/>
+                                </group>
+                            </group>
+                            <group name="very_good_grade">
+                                <group name="count_very_good_grade">
+                                    <field name="count_very_good_grade"/>
+                                </group>
+                                <group name="percentage_very_good_grade">
+                                    <field name="percentage_very_good_grade" widget="percentage"/>
+                                </group>
+                            </group>
+                            <group name="good_grade">
+                                <group name="count_good_grade">
+                                    <field name="count_good_grade"/>
+                                </group>
+                                <group name="percentage_good_grade">
+                                    <field name="percentage_good_grade" widget="percentage"/>
+                                </group>
+                            </group>
+                            <group name="pass_grade">
+                                <group name="count_pass_grade">
+                                    <field name="count_pass_grade"/>
+                                </group>
+                                <group name="percentage_pass_grade">
+                                    <field name="percentage_pass_grade" widget="percentage"/>
+                                </group>
+                            </group>
+                            <group name="pass_with_subjects_grade">
+                                <group name="count_pass_with_subjects_grade">
+                                    <field name="count_pass_with_subjects_grade"/>
+                                </group>
+                                <group name="percentage_pass_with_subjects_grade">
+                                    <field name="percentage_pass_with_subjects_grade" widget="percentage"/>
+                                </group>
+                            </group>
+                            <group name="failed">
+                                <group name="count_failed">
+                                    <field name="count_failed"/>
+                                </group>
+                                <group name="percentage_failed">
+                                    <field name="percentage_failed" widget="percentage"/>
+                                </group>
+                            </group>
+                            <group name="academic_warning">
+                                <group name="count_academic_warning">
+                                    <field name="count_academic_warning"/>
+                                </group>
+                                <group name="percentage_academic_warning">
+                                    <field name="percentage_academic_warning" widget="percentage"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Actions Taken" name="actions_taken">
+                            <group name="talented_students">
+                                <group name="action">
+                                    <field name="action_towards_talented_students"/>
+                                </group>
+                                <group name="result">
+                                    <field name="action_towards_talented_students_result"/>
+                                </group>
+                            </group>
+                            <group name="valedictorians">
+                                <group name="action">
+                                    <field name="action_towards_valedictorians"/>
+                                </group>
+                                <group name="result">
+                                    <field name="action_towards_valedictorians_result"/>
+                                </group>
+                            </group>
+                            <group name="faltered_students">
+                                <group name="action">
+                                    <field name="action_towards_faltered_students"/>
+                                </group>
+                                <group name="result">
+                                    <field name="action_towards_faltered_students_result"/>
+                                </group>
+                            </group>
+                            <group name="disabled_students">
+                                <group name="action">
+                                    <field name="action_towards_disabled_students"/>
+                                </group>
+                                <group name="result">
+                                    <field name="action_towards_disabled_students_result"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Constraints and Suggestions" name="constraints_and_suggestions">
+                            <group>
+                                <field name="constraints"/>
+                                <field name="suggestions"/>
+                                <field name="notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="academic_advising_report_view_search" model="ir.ui.view">
+        <field name="name">academic.advising.report.view.search</field>
+        <field name="model">academic.advising.report</field>
+        <field name="arch" type="xml">
+            <search string="Search Academic Advising Reports">
+                <field name="academic_advisor_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Academic Advisor" name="academic_advisor" domain="[]" context="{'group_by': 'academic_advisor_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTIONS (WINDOW) -->
+
+    <record id="action_academic_advising_reports" model="ir.actions.act_window">
+        <field name="name">Academic Advising Reports</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academic.advising.report</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="academic_advising_report_view_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[('company_id', 'in', context['allowed_company_ids'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No academic advising reports yet!
+            </p>
+        </field>
+    </record>
+</odoo>

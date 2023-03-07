@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_academic_advising_session,academic.advising.session,model_academic_advising_session,,1,1,1,1
+access_academic_advising_report,academic.advising.report,model_academic_advising_report,,1,1,1,1

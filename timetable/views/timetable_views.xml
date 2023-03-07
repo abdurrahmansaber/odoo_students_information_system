@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- VIEWS -->
+
+    <record id="view_timetable_tree" model="ir.ui.view">
+        <field name="name">timetable.tree</field>
+        <field name="model">timetable</field>
+        <field name="arch" type="xml">
+            <tree string="Timetables" sample="1">
+                <field name="semester"/>
+                <field name="department_id"/>
+                <field name="academic_program_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_timetable_form" model="ir.ui.view">
+        <field name="name">timetable.form</field>
+        <field name="model">timetable</field>
+        <field name="arch" type="xml">
+            <form string="Timetable">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_timetable_periods" type="object" class="oe_stat_button" icon="fa-clock-o" attrs="{'invisible': [('is_created', '=', False)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="periods_count"/></span>
+                                <span class="o_stat_text">Periods</span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="company_id" invisible="1"/>
+                    <group name="timetable_semester">
+                        <field name="semester" domain="[('company_id', '=', company_id)]" options="{'no_create': True}"/>
+                    </group>
+                    <group name="timetable_department_and_academic_program">
+                        <group name="timetable_department">
+                            <field name="department_id" domain="[('company_id', '=', company_id)]" options="{'no_create': True}"/>
+                        </group>
+                        <group name="timetable_academic_program">
+                            <field name="academic_program_id" domain="[('department_id', '=', department_id)]" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <field name="is_created" invisible="1"/>
+                    <notebook>
+                        <page string="Timetable Periods" name="timetable_periods" attrs="{'invisible': [('is_created', '=', True)]}">
+                            <field name="timetable_periods" context="{'default_company_id': company_id, 'default_timetable_id': active_id, 'tree_view_ref': 'timetable.view_timetable_periods_tree'}"/>
+                        </page>
+                        <page string="Saturday" name="saturday" attrs="{'invisible': [('is_created', '=', False)]}"><field name="saturday_lines" context="{'default_timetable_id': active_id, 'default_weekday': 'saturday'}"/></page>
+                        <page string="Sunday" name="sunday" attrs="{'invisible': [('is_created', '=', False)]}"><field name="sunday_lines" context="{'default_timetable_id': active_id, 'default_weekday': 'sunday'}"/></page>
+                        <page string="Monday" name="monday" attrs="{'invisible': [('is_created', '=', False)]}"><field name="monday_lines" context="{'default_timetable_id': active_id, 'default_weekday': 'monday'}"/></page>
+                        <page string="Tuesday" name="tuesday" attrs="{'invisible': [('is_created', '=', False)]}"><field name="tuesday_lines" context="{'default_timetable_id': active_id, 'default_weekday': 'tuesday'}"/></page>
+                        <page string="Wednesday" name="wednesday" attrs="{'invisible': [('is_created', '=', False)]}"><field name="wednesday_lines" context="{'default_timetable_id': active_id, 'default_weekday': 'wednesday'}"/></page>
+                        <page string="Thursday" name="thursday" attrs="{'invisible': [('is_created', '=', False)]}"><field name="thursday_lines" context="{'default_timetable_id': active_id, 'default_weekday': 'thursday'}"/></page>
+                        <page string="Friday" name="friday" attrs="{'invisible': [('is_created', '=', False)]}"><field name="friday_lines" context="{'default_timetable_id': active_id, 'default_weekday': 'friday'}"/></page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="timetable_view_search" model="ir.ui.view">
+        <field name="name">timetable.view.search</field>
+        <field name="model">timetable</field>
+        <field name="arch" type="xml">
+            <search string="Search Timetables">
+                <field name="semester"/>
+                <field name="department_id"/>
+                <field name="academic_program_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Semester" name="semester" domain="[]" context="{'group_by': 'semester'}"/>
+                    <filter string="Department" name="department" domain="[]" context="{'group_by': 'department_id'}"/>
+                    <filter string="Academic Program" name="academic_program" domain="[]" context="{'group_by': 'academic_program_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTIONS (WINDOW) -->
+
+    <record id="action_timetables" model="ir.actions.act_window">
+        <field name="name">Timetables</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">timetable</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="timetable_view_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[('company_id', 'in', context['allowed_company_ids'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new timetable!
+            </p>
+        </field>
+    </record>
+</odoo>

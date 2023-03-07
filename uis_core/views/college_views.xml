@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- VIEWS -->
+
+    <record id="view_college_tree" model="ir.ui.view">
+        <field name="name">college.tree</field>
+        <field name="model">college</field>
+        <field name="arch" type="xml">
+            <tree string="Colleges" sample="1">
+                <field name="code"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_college_form" model="ir.ui.view">
+        <field name="name">college.form</field>
+        <field name="model">college</field>
+        <field name="arch" type="xml">
+            <form string="College">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="code" placeholder="College Code..."/>
+                        </h1>
+                    </div>
+                    <group name="college_name">
+                        <field name="name"/>
+                    </group>
+                    <notebook>
+                        <page string="Departments" name="departments">
+                            <field name="department_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="college_view_search" model="ir.ui.view">
+        <field name="name">college.view.search</field>
+        <field name="model">college</field>
+        <field name="arch" type="xml">
+            <search string="Search Colleges">
+                <field name="code"/>
+                <field name="name"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTIONS (WINDOW) -->
+
+    <record id="action_colleges" model="ir.actions.act_window">
+        <field name="name">Colleges</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">college</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="college_view_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new college!
+            </p>
+        </field>
+    </record>
+</odoo>

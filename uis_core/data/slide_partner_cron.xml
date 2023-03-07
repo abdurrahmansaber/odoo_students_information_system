@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.cron" id="event_make_attendance_contents_incomplete">
+            <field name="name">Make Attendance content incomplete</field>
+            <field name="model_id" ref="model_slide_slide_partner"/>
+            <field name="state">code</field>
+            <field name="code">model._compute_attendance_complete_state()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=22, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="doall" eval="True"/>
+        </record>
+    </data>
+</odoo>

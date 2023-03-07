@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="academic_advising_menu"
+              name="Academic Advising"
+              parent="sis_core.sis_menu_root"
+              sequence="20">
+
+        <menuitem id="menu_academic_advising_sessions"
+                  name="Sessions"
+                  action="action_academic_advising_sessions"
+                  sequence="10"/>
+
+        <menuitem id="menu_academic_advising_reports"
+                  name="Reports"
+                  action="action_academic_advising_reports"
+                  sequence="20"/>
+
+    </menuitem>
+
+</odoo>

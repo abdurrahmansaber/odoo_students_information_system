@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- VIEWS -->
+
+    <record id="view_academic_program_tree" model="ir.ui.view">
+        <field name="name">academic.program.tree</field>
+        <field name="model">academic.program</field>
+        <field name="arch" type="xml">
+            <tree string="Academic Programs" sample="1">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="department_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_academic_program_form" model="ir.ui.view">
+        <field name="name">academic.program.form</field>
+        <field name="model">academic.program</field>
+        <field name="arch" type="xml">
+            <form string="Academic Program">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <field name="active" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="code" placeholder="Academic Program Code..."/>
+                        </h1>
+                    </div>
+                    <group name="academic_program_name">
+                        <field name="name"/>
+                    </group>
+                    <group name="academic_program_department">
+                        <field name="department_id" domain="[('company_id', '=', company_id)]" options="{'no_create': True}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="academic_program_view_search" model="ir.ui.view">
+        <field name="name">academic.program.view.search</field>
+        <field name="model">academic.program</field>
+        <field name="arch" type="xml">
+            <search string="Search Academic Programs">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="department_id"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Department" name="department" domain="[]" context="{'group_by': 'department_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTIONS (WINDOW) -->
+
+    <record id="action_academic_programs" model="ir.actions.act_window">
+        <field name="name">Academic Programs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">academic.program</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="academic_program_view_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[('company_id', 'in', context['allowed_company_ids'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new academic program!
+            </p>
+        </field>
+    </record>
+</odoo>

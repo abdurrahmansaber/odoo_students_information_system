@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_tree_add_code" model="ir.ui.view">
+        <field name="name">res.company.tree</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="code"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_company_form_add_code_and_departments" model="ir.ui.view">
+        <field name="name">res.company.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div" position="after">
+                <group>
+                    <group name="company_code">
+                        <field name="code"/>
+                    </group>
+                    <group name="company_duration_and_preparatory_year">
+                        <field name="study_duration"/>
+                        <field name="preparatory_year_included"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='general_info']" position="after">
+                <page string="Departments" name="departments">
+                    <field name="department_ids" context="{'default_company_id': active_id}"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_company_view_search" model="ir.ui.view">
+        <field name="name">res.company.view.search</field>
+        <field name="model">res.company</field>
+        <field name="arch" type="xml">
+            <search string="Search Companies">
+                <field name="name"/>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+</odoo>

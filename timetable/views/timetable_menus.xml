@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="timetable_menu"
+              name="Timetables"
+              parent="sis_core.sis_menu_root"
+              sequence="30">
+
+        <menuitem id="menu_timetables"
+                  name="Timetables"
+                  action="action_timetables"
+                  sequence="10"/>
+
+        <menuitem id="menu_timetable_periods"
+                  name="Timetable Periods"
+                  action="action_timetable_periods"
+                  sequence="20"/>
+
+    </menuitem>
+
+</odoo>

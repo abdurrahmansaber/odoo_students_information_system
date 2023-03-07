@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- VIEWS -->
+
+    <record id="view_timetable_period_tree" model="ir.ui.view">
+        <field name="name">timetable.period.tree</field>
+        <field name="model">timetable.period</field>
+        <field name="arch" type="xml">
+            <tree string="Timetable Periods" sample="1">
+                <field name="timetable_id"/>
+                <field name="period_order"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_timetable_periods_tree" model="ir.ui.view">
+        <field name="name">timetable.period.tree</field>
+        <field name="model">timetable.period</field>
+        <field name="arch" type="xml">
+            <tree string="Timetable Periods" editable="bottom" sample="1">
+                <field name="period_order"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_timetable_period_form" model="ir.ui.view">
+        <field name="name">timetable.period.form</field>
+        <field name="model">timetable.period</field>
+        <field name="arch" type="xml">
+            <form string="Timetable Period">
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="period_order" placeholder="Period Order"/>
+                        </h1>
+                    </div>
+                    <group name="period_timetable_and_order">
+                        <group name="period_timetable">
+                            <field name="timetable_id" domain="[('company_id', '=', company_id)]" options="{'no_create': True}"/>
+                        </group>
+                        <group name="timetable_period_order">
+                            <field name="period_order"/>
+                        </group>
+                    </group>
+                    <group name="timetable_period_times">
+                        <group name="timetable_period_start_time">
+                            <field name="start_time" widget="float_time"/>
+                        </group>
+                        <group name="timetable_period_end_time">
+                            <field name="end_time" widget="float_time"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="timetable_period_view_search" model="ir.ui.view">
+        <field name="name">timetable.period.view.search</field>
+        <field name="model">timetable.period</field>
+        <field name="arch" type="xml">
+            <search string="Search Timetable Periods">
+                <field name="timetable_id"/>
+                <field name="period_order"/>
+                <group expand="0" string="Group By">
+                    <filter string="Timetable" name="timetable" domain="[]" context="{'group_by': 'timetable_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTIONS (WINDOW) -->
+
+    <record id="action_timetable_periods" model="ir.actions.act_window">
+        <field name="name">Timetable Periods</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">timetable.period</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="timetable_period_view_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[('company_id', 'in', context['allowed_company_ids'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new timetable period!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_timetable_periods_view_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_timetable_period_tree"/>
+        <field name="act_window_id" ref="action_timetable_periods"/>
+    </record>
+</odoo>
