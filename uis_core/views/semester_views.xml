@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- VIEWS -->
+
+    <record id="view_semester_tree" model="ir.ui.view">
+        <field name="name">semester.tree</field>
+        <field name="model">semester</field>
+        <field name="arch" type="xml">
+            <tree string="Semesters" editable="bottom" sample="1">
+                <field name="name"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_semester_form" model="ir.ui.view">
+        <field name="name">semester.form</field>
+        <field name="model">semester</field>
+        <field name="arch" type="xml">
+            <form string="Semester">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Semester Name..."/>
+                        </h1>
+                    </div>
+                    <group name="semester_dates">
+                        <group name="semester_start_date">
+                            <field name="start_date"/>
+                        </group>
+                        <group name="semester_end_date">
+                            <field name="end_date" widget="daterange" options="{'related_start_date': 'start_date'}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="semester_view_search" model="ir.ui.view">
+        <field name="name">semester.view.search</field>
+        <field name="model">semester</field>
+        <field name="arch" type="xml">
+            <search string="Search Semesters">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTIONS (WINDOW) -->
+
+    <record id="action_semesters" model="ir.actions.act_window">
+        <field name="name">Semesters</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">semester</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="semester_view_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[('company_id', 'in', context['allowed_company_ids'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new semester!
+            </p>
+        </field>
+    </record>
+</odoo>

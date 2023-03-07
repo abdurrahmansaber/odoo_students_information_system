@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="view_uis_employee_form" model="ir.ui.view">
+            <field name="name">view_uis_employee_form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//header" position="replace"/>
+
+                <xpath expr="//group" position="replace">
+                    <group>
+                        <field name="mobile_phone" widget="phone"/>
+                        <field name="work_phone" widget="phone"/>
+                        <field name="work_email" widget="email"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="company_country_id" invisible="1"/>
+                        <field name="company_country_code" invisible="1"/>
+                    </group>
+                </xpath>
+
+                <xpath expr="//notebook/page/div/div/group[@name='managers']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="translate">True</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_uis_employee_filter_hide_search_panel" model="ir.ui.view">
+            <field name="name">view_uis_employee_filter_hide_search_panel</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//searchpanel" position="replace"/>
+            </field>
+        </record>
+
+        <record id="action_uis_employee_views" model="ir.actions.act_window">
+            <field name="name">Employees</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="view_uis_employee_filter_hide_search_panel"/>
+            <field name="domain">[('employee_type', '=', 'teacher')]</field>
+            <field name="context">{'default_employee_type': 'teacher'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new employee!
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

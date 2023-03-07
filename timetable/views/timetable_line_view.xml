@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_timetable_line_tree" model="ir.ui.view">
+        <field name="name">timetable.line.tree</field>
+        <field name="model">timetable.line</field>
+        <field name="arch" type="xml">
+            <tree string="Timetable Lines" editable="bottom" sample="1">
+                <field name="timetable_id" invisible="1"/>
+                <field name="weekday" invisible="1"/>
+                <field name="timetable_period" domain="[('timetable_id', '=', parent.id)]" options="{'no_create': True}"/>
+                <field name="level"/>
+                <field name="course_id" domain="[('company_id', '=', parent.company_id), ('level', '=', level), ('semester_ids.id', '=', parent.semester)]" options="{'no_create': True}"/>
+                <field name="teacher_id" domain="[('employee_type', '=', 'teacher')]" options="{'no_create': True}"/>
+                <field name="type"/>
+                <field name="section_ids" domain="[('academic_program_id', '=', parent.academic_program_id), ('level', '=', level)]" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="building_id" domain="[('department_id', '=', parent.department_id)]" options="{'no_create': True}"/>
+                <field name="classroom_id" domain="[('building_id', '=', building_id)]" options="{'no_create': True}"/>
+            </tree>
+        </field>
+    </record>
+</odoo>
+
