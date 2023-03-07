@@ -1,1 +1,2 @@
-# Students Information System (SIS) using odoo
+# odoo_students_information_system
+
