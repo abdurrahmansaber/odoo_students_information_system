@@ -1,2 +1,2 @@
-# odoo_students_information_system
+# odoo_students_information_system (SIS)
 
