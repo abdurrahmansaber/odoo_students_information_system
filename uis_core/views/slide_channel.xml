@@ -34,7 +34,8 @@
                 </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <group>
-                        <field name="academic_program_id" domain="[('company_id', '=', company_id)]" options="{'no_quick_create': True, 'no_create_edit': True}"/>
+                        <field name="department_id" domain="[('company_id', '=', company_id)]" options="{'no_quick_create': True, 'no_create_edit': True, 'no_create': True}"/>
+                        <field name="academic_program_id" domain="[('department_id', '=', department_id)]" options="{'no_quick_create': True, 'no_create_edit': True, 'no_create': True}"/>
                         <field name="semester_ids" widget="many2many_tags" string="Semesters" options="{'no_quick_create': True, 'no_create_edit': True}"/>
                         <field name="level"/>
                     </group>

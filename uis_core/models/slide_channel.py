@@ -39,6 +39,7 @@ class SlideChannel(models.Model):
     company_id = fields.Many2one('res.company', ondelete='cascade', readonly=True,
                                  default=lambda self: self.env.company)
     academic_program_id = fields.Many2one('academic.program', required=True)
+    department_id = fields.Many2one('department', required=True)
     semester_ids = fields.Many2many('semester')
     # course internal basic data
     code = fields.Char(required=True, copy=False)
@@ -55,8 +56,7 @@ class SlideChannel(models.Model):
     quizzes_total_grade = fields.Float()
     project_grade = fields.Float()
     assignments_grade = fields.Float()
-    level = fields.Selection(_get_level_selection, required=True,
-                             tracking=True)
+    level = fields.Selection(_get_level_selection, required=True, tracking=True)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -69,6 +69,12 @@ class SlideChannel(models.Model):
                               'is_published': False,
                               'is_attendance': True
                               })
+            partner_ids = self.env['res.partner'].search([('department_id', '=', vals_list[0].get('department_id')),
+                                                          ('academic_program_id', '=', vals_list[0].get('academic_program_id')),
+                                                          ('level', '=', vals_list[0].get('level')),
+                                                          ('is_student', '=', True)])
+            record._action_add_members(partner_ids)
+
         return res
 
     @api.onchange('final_exam_grade', 'mid_semester_grade', 'oral_grade', 'quizzes_total_grade')

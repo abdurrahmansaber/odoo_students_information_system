@@ -66,6 +66,21 @@ class ResPartner(models.Model):
                         rec.level = levels[levels.index(rec.level) + 1]
                 rec.state = 'n/a'
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super().create(vals_list)
+        res_users_obj = self.env['res.users']
+        for record in res:
+            uid = res_users_obj.create({
+                'name': record.name,
+                'login': record.internal_reference,
+                'partner_id': record.id,
+                'password': 'changeme',
+                'groups_id': [6, 0, self.env['ir.model.data']._xmlid_to_res_id('base.group_portal', raise_if_not_found=False)]
+
+            })
+        return res
+
     @api.constrains('internal_reference')
     def _check_unique_internal_reference(self):
         for rec in self:
