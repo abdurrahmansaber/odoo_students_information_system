@@ -62,6 +62,7 @@ class SlideChannel(models.Model):
     def create(self, vals_list):
         res = super().create(vals_list)
         slide_obj = self.env['slide.slide']
+        res_partner_obj = self.env['res.partner']
         for record in res:
             slide_obj.create({'name': '[{}] Attendance'.format(record.code),
                               'channel_id': record.id,
@@ -69,11 +70,13 @@ class SlideChannel(models.Model):
                               'is_published': False,
                               'is_attendance': True
                               })
-            partner_ids = self.env['res.partner'].search([('department_id', '=', vals_list[0].get('department_id')),
-                                                          ('academic_program_id', '=', vals_list[0].get('academic_program_id')),
-                                                          ('level', '=', vals_list[0].get('level')),
-                                                          ('is_student', '=', True)])
-            record._action_add_members(partner_ids)
+
+            partner_ids = res_partner_obj.search([('department_id', '=', record.department_id.id),
+                                                  ('academic_program_id', '=', record.academic_program_id.id),
+                                                  ('level', '=', record.level),
+                                                  ('is_student', '=', True)])
+            if len(partner_ids):
+                record._action_add_members(partner_ids)
 
         return res
 
