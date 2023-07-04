@@ -1,10 +1,41 @@
+import odoo
 from odoo import http
 from odoo.http import request
+from odoo.exceptions import AccessError
+from odoo.addons.web.controllers.session import Session
+
+
+@http.route('/web/session/authenticate', type='http', auth="none", csrf=False)
+def authenticate(self, db, login, password, base_location=None):
+    if not http.db_filter([db]):
+        raise AccessError("Database not found.")
+    pre_uid = request.session.authenticate(db, login, password)
+    if pre_uid != request.session.uid:
+        # Crapy workaround for unupdatable Odoo Mobile App iOS (Thanks Apple :@) and Android
+        # Correct behavior should be to raise AccessError("Renewing an expired session for user that has multi-factor-authentication is not supported. Please use /web/login instead.")
+        return {'uid': None}
+
+    request.session.db = db
+    registry = odoo.modules.registry.Registry(db)
+    with registry.cursor() as cr:
+        env = odoo.api.Environment(cr, request.session.uid, request.session.context)
+        if not request.db and not request.session.is_explicit:
+            # request._save_session would not update the session_token
+            # as it lacks an environment, rotating the session myself
+            http.root.session_store.rotate(request.session, env)
+            request.future_response.set_cookie(
+                'session_id', request.session.sid,
+                max_age=http.SESSION_LIFETIME, httponly=True
+            )
+        return str(env['ir.http'].session_info())
+
+
+Session.authenticate = authenticate
 
 
 class OnboardingController(http.Controller):
-    @http.route('/sis/student/courses', type='json', auth='user')
-    def student_courses(self, uid: int):
+    @http.route('/sis/student/courses/<int:uid>', type='http', auth='user')
+    def student_courses(self, uid):
         partner_id = request.env['res.users'].browse(uid).partner_id
         slide_channel_partner_ids = request.env['slide.channel.partner'].sudo().search([
             ('partner_id', '=', partner_id.id)
@@ -43,4 +74,4 @@ class OnboardingController(http.Controller):
                 ).lectures_completion,
             }
 
-        return student_courses
+        return str(student_courses)

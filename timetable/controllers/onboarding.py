@@ -4,8 +4,8 @@ from datetime import date
 
 
 class OnboardingController(http.Controller):
-    @http.route('/sis/student/timetable', type='json', auth='user')
-    def student_timetable(self, uid: int):
+    @http.route('/sis/student/timetable/<int:uid>', type='http', auth='user')
+    def student_timetable(self, uid):
         semester = request.env['semester'].sudo().search([
             ('company_id', '=', request.env.company.id),
             ('start_date', '<=', date.today()),
@@ -47,4 +47,5 @@ class OnboardingController(http.Controller):
                     'classroom': line.classroom_id.name,
                 }
             student_timetable[weekday[0]] = weekday_lines
-        return {"{'semester': '%s'}" % semester.name: student_timetable}
+
+        return str({"{'semester': '%s'}" % semester.name: student_timetable})

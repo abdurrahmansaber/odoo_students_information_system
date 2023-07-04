@@ -3,11 +3,11 @@ from odoo.http import request
 
 
 class OnboardingController(http.Controller):
-    @http.route('/sis/user/info', type='json', auth='user')
-    def user_info(self, uid: int):
+    @http.route('/sis/user/info/<int:uid>', type='http', auth='user')
+    def user_info(self, uid):
         user_id = request.env['res.users'].browse(uid)
         partner_id = user_id.partner_id
-        return {
+        return str({
             'name': user_id.name,
             'is_student': user_id.is_student,
             'student_id': partner_id.internal_reference,
@@ -23,4 +23,4 @@ class OnboardingController(http.Controller):
                 request.env['res.partner'].fields_get(allfields=['level'])['level']['selection']
             ).get(partner_id.level),
             'section_id': partner_id.section_id.name,
-        }
+        })
