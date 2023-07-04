@@ -26,6 +26,15 @@ class TimetableLine(models.Model):
     building_id = fields.Many2one('building', required=True)
     classroom_id = fields.Many2one('classroom', required=True)
 
+    @api.onchange('level')
+    def _onchange_level(self):
+        for rec in self:
+            rec.section_ids = self.env['section'].search([
+                ('department_id', '=', rec.timetable_id.department_id.id),
+                ('academic_program_id', '=', rec.timetable_id.academic_program_id.id),
+                ('level', '=', rec.level),
+            ])
+
     @api.constrains('teacher_id')
     def _check_teacher_id(self):
         for rec in self:
