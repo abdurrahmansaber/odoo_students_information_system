@@ -70,22 +70,17 @@ class ResPartner(models.Model):
     def create(self, vals_list):
         res = super().create(vals_list)
         res_users_obj = self.env['res.users']
-        slide_channel_obj = self.env['slide.channel']
+        new_users = []
         for record in res.filtered('is_student'):
-            res_users_obj.create({
+            new_users.append({
                 'name': record.name,
                 'login': record.internal_reference,
                 'partner_id': record.id,
                 'password': 'changeme',
                 'groups_id': [6, 0, self.env['ir.model.data']._xmlid_to_res_id('base.group_portal',
                                                                                raise_if_not_found=False)]
-
             })
-            course_ids = slide_channel_obj.search([('department_id', '=', record.department_id.id),
-                                                   ('academic_program_id', '=', record.academic_program_id.id),
-                                                   ('level', '=', record.level)])
-            for course in course_ids:
-                course._action_add_members(record)
+        res_users_obj.create(new_users)
 
         return res
 
