@@ -9,27 +9,85 @@ def _get_level_selection(self):
 
 class SlideChannelPartner(models.Model):
     _inherit = 'slide.channel.partner'
+    _rec_name = 'partner_id'
 
     lecture_attendance_count = fields.Integer()
     lectures_completion = fields.Float(compute="_compute_lectures_completion")
-    partner_name = fields.Char(compute="_compute_partner_data")
-    partner_code = fields.Char(compute="_compute_partner_data")
+    partner_name = fields.Char(related='partner_id.name', stored=True)
+    partner_code = fields.Char(related='partner_id.internal_reference', stored=True)
+    total_grade = fields.Float(compute='_compute_total_grade')
+    final_exam_grade = fields.Float()
+    mid_semester_grade = fields.Float()
+    oral_grade = fields.Float()
+    quizzes_total_grade = fields.Float()
+    project_grade = fields.Float()
+    assignments_grade = fields.Float()
+    final_exam_grade_submitted = fields.Boolean()
 
-    @api.depends('partner_id')
-    def _compute_partner_data(self):
+    @api.onchange('final_exam_grade')
+    def _create_student_yearly_archive(self):
+        scp_obj = self.env['slide.channel.partner']
         for rec in self:
-            rec.partner_name = rec.partner_id.name
-            rec.partner_code = rec.partner_id.internal_reference
+            rec._origin.final_exam_grade_submitted = True
+            student_subjects = scp_obj.search([('partner_id', '=', rec.partner_id.id)])
+            if len(student_subjects.filtered(lambda ss: not ss.final_exam_grade_submitted)) == 0:
+                failed_subjects = student_subjects.filtered(
+                    lambda s: s.total_grade < (
+                                s.channel_id.total_grade * rec.channel_id.company_id.minimum_subject_passing_percentage))
+                state = (len(failed_subjects) <= rec.channel_id.company_id.maximum_failed_subjects)
+
+                # total_subjects_grade = sum(student_subjects.mapped('total_grade'))
+
+                vals = {
+                    'partner_id': rec.partner_id.id,
+                    'academic_year': rec.channel_id.company_id.academic_year_name,
+                    'academic_program_id': rec.partner_id.academic_program_id.id,
+                    'level': rec.partner_id.level,
+                    'state': 'pass' if state else 'fail',
+                    # 'total_grade': total_subjects_grade,
+                    'section_id': rec.partner_id.section_id.name,
+                    'academic_advisor_id': rec.partner_id.academic_advisor_id.id,
+                }
+
+                self.env['student.archive.line'].create(vals)
+                levels = [code for code, name in rec.channel_id.company_id.get_level_selection()]
+
+                if rec.partner_id.level == levels[len(levels) - 1]:
+                    vals = {
+                        'student_name': rec.partner_id.name,
+                        'company_id': rec.partner_id.company_id.name,
+                        'student_code': rec.partner_id.internal_reference,
+                        'national_id': rec.partner_id.national_id,
+                        'phone': rec.partner_id.phone,
+                        'email': rec.partner_id.email,
+                        'lang': rec.partner_id.lang,
+                        'street': rec.partner_id.street,
+                        'city': rec.partner_id.city,
+                        'state': rec.partner_id.state_id.name,
+                        'country': rec.partner_id.country_id.name,
+                        'line_ids': [(6, 0, rec.partner_id.archive_line_ids.ids)]
+                    }
+                    self.env['student.archive'].create(vals)
+                    # TODO: Apply necessary logic for graduates
+                else:
+                    rec.partner_id.level = levels[levels.index(rec.partner_id.level) + 1]
 
     @api.onchange('lecture_attendance_count')
     def _compute_lectures_completion(self):
         for rec in self:
             rec.lectures_completion = round(
-                100.0 * rec.lecture_attendance_count / (rec.channel_id.num_of_lectures or 1)) if rec.lecture_attendance_count <= rec.channel_id.num_of_lectures else 100
+                100.0 * rec.lecture_attendance_count / (
+                        rec.channel_id.num_of_lectures or 1)) if rec.lecture_attendance_count <= rec.channel_id.num_of_lectures else 100
 
     def _record_manual_attendance(self):
         for rec in self:
             rec.lecture_attendance_count += 1
+
+    @api.onchange('final_exam_grade', 'mid_semester_grade', 'oral_grade', 'quizzes_total_grade', 'assignments_grade',
+                  'project_grade')
+    def _compute_total_grade(self):
+        for rec in self:
+            rec.total_grade = rec.assignments_grade + rec.project_grade + rec.mid_semester_grade + rec.final_exam_grade + rec.oral_grade + rec.quizzes_total_grade
 
 
 # This is the course model , blame odoo for the ambiguity :)
@@ -48,6 +106,7 @@ class SlideChannel(models.Model):
     exercise_hours = fields.Float()
     num_of_weeks = fields.Float()
     num_of_lectures = fields.Integer()
+    actual_num_of_lectures = fields.Integer()
 
     total_grade = fields.Float(compute='_compute_total_grade')  # FIXME: Make Sure That grades sum is consistent
     final_exam_grade = fields.Float()
@@ -62,7 +121,6 @@ class SlideChannel(models.Model):
     def create(self, vals_list):
         res = super().create(vals_list)
         slide_obj = self.env['slide.slide']
-        res_partner_obj = self.env['res.partner']
         for record in res:
             slide_obj.create({'name': '[{}] Attendance'.format(record.code),
                               'channel_id': record.id,
@@ -70,14 +128,6 @@ class SlideChannel(models.Model):
                               'is_published': False,
                               'is_attendance': True
                               })
-
-            partner_ids = res_partner_obj.search([('department_id', '=', record.department_id.id),
-                                                  ('academic_program_id', '=', record.academic_program_id.id),
-                                                  ('level', '=', record.level),
-                                                  ('is_student', '=', True)])
-            if len(partner_ids):
-                record._action_add_members(partner_ids)
-
         return res
 
     @api.onchange('final_exam_grade', 'mid_semester_grade', 'oral_grade', 'quizzes_total_grade')

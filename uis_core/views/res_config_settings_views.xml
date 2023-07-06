@@ -9,9 +9,9 @@
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('settings')]" position="inside">
                 <div class="app_settings_block"
-                    string="UIS"
-                    data-string="UIS"
-                    data-key="uis_core">
+                     string="UIS"
+                     data-string="UIS"
+                     data-key="uis_core">
                     <h2>Academic Year</h2>
                     <div class="row mt16 o_settings_container" name="academic_year_setting_container">
                         <div class="col-12 col-lg-6 o_setting_box" id="academic_year_name">
@@ -55,10 +55,33 @@
                             <div class="o_setting_right_pane">
                                 <div class="content-group mt8">
                                     <label for="academic_year_number_of_semesters" class="o_light_label"/>
-                                    <field name="academic_year_number_of_semesters" class="oe_inline" title="Academic Year Number of Semesters"/>
+                                    <field name="academic_year_number_of_semesters" class="oe_inline"
+                                           title="Academic Year Number of Semesters"/>
                                 </div>
                                 <div class="mt8">
-                                    <button name="%(action_semesters)d" icon="fa-arrow-right" type="action" string="Semesters" class="btn-link" title="Academic Year Semesters"/>
+                                    <button name="%(action_semesters)d" icon="fa-arrow-right" type="action"
+                                            string="Semesters" class="btn-link" title="Academic Year Semesters"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2>Passing Criteria</h2>
+                    <div class="row mt16 o_settings_container" name="passing_criteria_setting_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="minimum_subject_passing_percentage">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="minimum_subject_passing_percentage"/>
+                                <div class="content-group mt8">
+                                    <field name="minimum_subject_passing_percentage" title="Minimum Percentage For Passing Subjects" widget="percentage"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="maximum_failed_subjects">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="maximum_failed_subjects"/>
+                                <div class="content-group mt8">
+                                    <field name="maximum_failed_subjects" title="Maximum Number Of Failed Subjects"/>
                                 </div>
                             </div>
                         </div>

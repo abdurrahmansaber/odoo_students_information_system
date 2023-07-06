@@ -16,7 +16,6 @@ class StudentArchive(models.Model):
     city = fields.Char()
     state = fields.Char()
     country = fields.Char()
-
     line_ids = fields.One2many('student.archive.line', 'archive_id')
 
 
