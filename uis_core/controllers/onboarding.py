@@ -36,8 +36,8 @@ Session.authenticate = authenticate
 
 
 @http.route('/web/session/logout', type='http', auth='none')
-def logout(self):
-    return str({'message': 'Hello, World!'})
+def logout(self, name):
+    return str({'message': f'Hello, {name}!'})
 
 
 Session.logout = logout
