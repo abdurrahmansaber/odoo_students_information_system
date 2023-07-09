@@ -21,8 +21,9 @@ class HrEmployee(models.Model):
             }
             user_id = res_users_obj.create(vals)
             user_id.partner_id.is_teacher = True
-            record.address_home_id = record.related_contact_ids[0] if len(record.related_contact_ids) == 1 else None
-
+            record.user_id = user_id
+            record.work_email = user_id.login
+            record.address_home_id = record.user_id.partner_id
         return res
 
 
