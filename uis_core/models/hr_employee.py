@@ -21,6 +21,7 @@ class HrEmployee(models.Model):
             }
             user_id = res_users_obj.create(vals)
             user_id.partner_id.is_teacher = True
+            user_id.partner_id.company_id = record.company_id
             record.user_id = user_id
             record.work_email = user_id.login
             record.address_home_id = record.user_id.partner_id
