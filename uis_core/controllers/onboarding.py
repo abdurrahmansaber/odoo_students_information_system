@@ -35,12 +35,12 @@ def authenticate(self, db, login, password, base_location=None):
 Session.authenticate = authenticate
 
 
-@http.route('/web/session/logout', type='http', auth='none')
-def logout(self, redirect='/web'):
+@http.route('/web/session/log', type='http', auth="none", csrf=False)
+def log(self, redirect='/web'):
     return str({'message': f'Hello, {redirect}!'})
 
 
-Session.logout = logout
+Session.log = log
 
 
 class OnboardingController(http.Controller):
