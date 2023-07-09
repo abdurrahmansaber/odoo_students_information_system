@@ -27,7 +27,9 @@ def authenticate(self, db, login, password, base_location=None):
                 'session_id', request.session.sid,
                 max_age=http.SESSION_LIFETIME, httponly=True
             )
-        return str(env['ir.http'].session_info())
+        session_info = env['ir.http'].session_info()
+        session_info['session_id'] = request.httprequest.cookies.get('session_id')
+        return str(session_info)
 
 
 Session.authenticate = authenticate
