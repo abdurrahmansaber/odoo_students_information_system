@@ -13,8 +13,6 @@ class SlideChannelPartner(models.Model):
 
     lecture_attendance_count = fields.Integer()
     lectures_completion = fields.Float(compute="_compute_lectures_completion")
-    partner_name = fields.Char(related='partner_id.name', stored=True)
-    partner_code = fields.Char(related='partner_id.internal_reference', stored=True)
     total_grade = fields.Float(compute='_compute_total_grade')
     final_exam_grade = fields.Float()
     mid_semester_grade = fields.Float()
@@ -142,25 +140,25 @@ class SlideChannel(models.Model):
                     [('code', '=', rec.code.strip().replace(' ', '')), ('id', '!=', rec.id)]):
                 raise UserError(_('Cannot create course with duplicated code'))
 
-    def action_channel_invite(self):
-        self.ensure_one()
-        template = self.env.ref('website_slides.mail_template_slide_channel_invite', raise_if_not_found=False)
-
-        local_context = dict(
-            self.env.context,
-            default_channel_id=self.id,
-            default_use_template=bool(template),
-            default_template_id=template and template.id or False,
-            default_email_layout_xmlid='website_slides.mail_notification_channel_invite',
-            default_partner_ids=self.env['res.partner'].search([('level', '=', self.level),
-                                                                ('is_student', '=', True),
-                                                                ('academic_program_id', '=',
-                                                                 self.academic_program_id.id)]).ids
-        )
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'slide.channel.invite',
-            'target': 'new',
-            'context': local_context,
-        }
+    # def action_channel_invite(self):
+    #     self.ensure_one()
+    #     template = self.env.ref('website_slides.mail_template_slide_channel_invite', raise_if_not_found=False)
+    #
+    #     local_context = dict(
+    #         self.env.context,
+    #         default_channel_id=self.id,
+    #         default_use_template=bool(template),
+    #         default_template_id=template and template.id or False,
+    #         default_email_layout_xmlid='website_slides.mail_notification_channel_invite',
+    #         default_partner_ids=self.env['res.partner'].search([('level', '=', self.level),
+    #                                                             ('is_student', '=', True),
+    #                                                             ('academic_program_id', '=',
+    #                                                              self.academic_program_id.id)]).ids
+    #     )
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'view_mode': 'form',
+    #         'res_model': 'slide.channel.invite',
+    #         'target': 'new',
+    #         'context': local_context,
+    #     }

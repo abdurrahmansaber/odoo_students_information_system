@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="slide_channel_partner_view_tree_add_partner_name_and_code" model="ir.ui.view">
+        <field name="name">slide.channel.partner.view.tree.add.partner.name.and.code</field>
+        <field name="model">slide.channel.partner</field>
+        <field name="inherit_id" ref="website_slides.slide_channel_partner_view_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='channel_id']" position="before">
+                <field name="partner_code"/>
+                <field name="partner_name"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

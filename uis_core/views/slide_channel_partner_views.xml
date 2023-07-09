@@ -39,11 +39,6 @@
                 <attribute name="readonly">1</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='channel_id']" position="before">
-                <field name="partner_code"/>
-                <field name="partner_name"/>
-            </xpath>
-
             <xpath expr="//button[@name='unlink']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
