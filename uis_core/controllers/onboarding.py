@@ -35,6 +35,14 @@ def authenticate(self, db, login, password, base_location=None):
 Session.authenticate = authenticate
 
 
+@http.route('/web/session/logout', type='http', auth='none')
+def logout(self):
+    return str({'message': 'Hello, World!'})
+
+
+Session.logout = logout
+
+
 class OnboardingController(http.Controller):
     @http.route('/sis/student/courses/<int:uid>', type='http', auth='user')
     def student_courses(self, uid):
