@@ -3,7 +3,7 @@ from odoo.http import request
 
 
 class OnboardingController(http.Controller):
-    @http.route('/sis/user/info/<int:uid>', type='http', auth='user')
+    @http.route('/sis/user/info/<int:uid>', type='http', auth='user', csrf=False)
     def user_info(self, uid):
         user_id = request.env['res.users'].sudo().browse(uid)
         partner_id = user_id.partner_id
