@@ -1,55 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <record id="website_slides.slide_channel_partner_action" model="ir.actions.act_window">
+        <field name="domain">[('channel_user_id', '=', uid),('partner_id.is_student', "=", True)]</field>
+        <field name="context">{'search_default_groupby_channel_id': 1}</field>
+    </record>
 
-        <record id="website_slides.slide_channel_partner_action" model="ir.actions.act_window">
-            <field name="domain">[('channel_user_id', '=', uid),('partner_id.is_student', "=", True)]</field>
-            <field name="context">{'search_default_groupby_channel_id': 1}</field>
-        </record>
+    <record id="slide_channel_partner_view_form" model="ir.ui.view">
+        <field name="name">slide.channel.partner.view.form</field>
+        <field name="model">slide.channel.partner</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group string="Grades">
+                        <field name="total_grade"/>
+                        <field name="final_exam_grade"/>
+                        <field name="mid_semester_grade"/>
+                        <field name="oral_grade"/>
+                        <field name="quizzes_total_grade"/>
+                        <field name="project_grade"/>
+                        <field name="assignments_grade"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <record id="slide_channel_partner_view_tree_make_channel_readonly_and_unlink_invisible" model="ir.ui.view">
-            <field name="name">slide_channel_partner_view_tree_make_channel_readonly_and_unlink_invisible</field>
-            <field name="model">slide.channel.partner</field>
-            <field name="inherit_id" ref="website_slides.slide_channel_partner_view_tree"/>
-            <field name="arch" type="xml">
+    <record id="slide_channel_partner_view_tree_make_channel_readonly_and_unlink_invisible" model="ir.ui.view">
+        <field name="name">slide_channel_partner_view_tree_make_channel_readonly_and_unlink_invisible</field>
+        <field name="model">slide.channel.partner</field>
+        <field name="inherit_id" ref="website_slides.slide_channel_partner_view_tree"/>
+        <field name="arch" type="xml">
 
-                <xpath expr="//field[@name='channel_id']" position="attributes">
-                    <attribute name="readonly">1</attribute>
-                </xpath>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="edit">false</attribute>
+            </xpath>
 
-                <xpath expr="//field[@name='channel_id']" position="before">
-                    <field name="partner_code"/>
-                    <field name="partner_name"/>
-                </xpath>
+            <xpath expr="//field[@name='channel_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
 
-                <xpath expr="//button[@name='unlink']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+            <xpath expr="//button[@name='unlink']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-                <xpath expr="//field[@name='create_date']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+            <xpath expr="//field[@name='create_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-                <xpath expr="//field[@name='write_date']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
+            <xpath expr="//field[@name='write_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-                <xpath expr="//field[@name='completion']" position="replace">
-                    <field name="lectures_completion" string="Progress" widget="progressbar"/>
-                    <field name="lecture_attendance_count" string="Attended" readonly="1"/>
-                </xpath>
+            <xpath expr="//field[@name='completion']" position="replace">
+                <field name="lectures_completion" string="Progress" widget="progressbar"/>
+                <field name="lecture_attendance_count" string="Attended" readonly="1"/>
+            </xpath>
 
-            </field>
-        </record>
+        </field>
+    </record>
 
-        <record id="action_server_record_manual_attendance" model="ir.actions.server">
-            <field name="name">Record Attendance</field>
-            <field name="type">ir.actions.server</field>
-            <field name="model_id" ref="model_slide_channel_partner"/>
-            <field name="binding_model_id" ref="model_slide_channel_partner"/>
-            <field name="state">code</field>
-            <field name="code">records._record_manual_attendance()</field>
-        </record>
+    <record id="action_server_record_manual_attendance" model="ir.actions.server">
+        <field name="name">Record Attendance</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_slide_channel_partner"/>
+        <field name="binding_model_id" ref="model_slide_channel_partner"/>
+        <field name="state">code</field>
+        <field name="code">records._record_manual_attendance()</field>
+    </record>
 
-    </data>
 </odoo>

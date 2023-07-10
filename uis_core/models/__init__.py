@@ -10,4 +10,7 @@ from . import building
 from . import classroom
 from . import slide_channel
 from . import slide_slide
+from . import slide_channel_invite
+from . import res_partner
 from . import hr_employee
+

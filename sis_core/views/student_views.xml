@@ -1,166 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <record id="view_sis_res_partner_tree" model="ir.ui.view">
+        <field name="name">view.sis.res.partner.tree</field>
+        <field name="model">res.partner</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <tree string="Students" sample="true" delete="false">
+                <field name="internal_reference" string="ID"/>
+                <field name="name" string="Student Name"/>
+                <field name="country_id" string="Nationality"/>
+                <field name="mobile" string="Mobile"/>
+                <field name="department_id" string="Department"/>
+            </tree>
+        </field>
+    </record>
 
-        <record id="view_sis_res_partner_tree" model="ir.ui.view">
-            <field name="name">view.sis.res.partner.tree</field>
-            <field name="model">res.partner</field>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-                <tree string="Students" sample="true" delete="false">
-                    <field name="internal_reference" string="ID"/>
-                    <field name="name" string="Student Name"/>
-                    <field name="country_id" string="Nationality"/>
-                    <field name="mobile" string="Mobile"/>
-                    <field name="department_id" string="Department"/>
-                </tree>
-            </field>
-        </record>
+    <record id="view_sis_res_partner_form" model="ir.ui.view">
+        <field name="name">view.sis.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form string="Student">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                icon="fa-graduation-cap" name="action_view_courses">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="slide_channel_count"/>
+                                </span>
+                                <span class="o_stat_text">Courses</span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="avatar_128" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
 
-        <record id="view_sis_res_partner_form" model="ir.ui.view">
-            <field name="name">view.sis.res.partner.form</field>
-            <field name="model">res.partner</field>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-                <form string="Student">
-                    <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object"
-                                    icon="fa-graduation-cap" name="action_view_courses">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="slide_channel_count"/>
-                                    </span>
-                                    <span class="o_stat_text">Courses</span>
-                                </div>
-                            </button>
-                        </div>
-                        <field name="avatar_128" invisible="1"/>
-                        <field name="active" invisible="1"/>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
-                                attrs="{'invisible': [('active', '=', True)]}"/>
-
-                        <field name="image_1920" widget='image' class="oe_avatar"
-                               options='{"preview_image": "avatar_128"}'/>
-                        <div class="oe_title mb24">
-                            <h1>
-                                <field class="text-break" name="name" default_focus="1"
-                                       placeholder="Student Name"
-                                       attrs="{'required' : True}" translate="1"/>
-                            </h1>
-                        </div>
+                    <field name="image_1920" widget='image' class="oe_avatar"
+                           options='{"preview_image": "avatar_128"}'/>
+                    <div class="oe_title mb24">
+                        <h1>
+                            <field class="text-break" name="name" default_focus="1"
+                                   placeholder="Student Name"
+                                   attrs="{'required' : True}" translate="1"/>
+                        </h1>
+                    </div>
+                    <group>
                         <group>
-                            <group>
-                                <field name="internal_reference" string="Student ID" required="1"/>
-                                <field name="national_id" string="National ID" required="1"/>
-                            </group>
-
+                            <field name="internal_reference" string="Student ID" required="1"/>
+                            <field name="national_id" string="National ID" required="1"/>
                         </group>
 
-                        <notebook>
-                            <page string="Contact Information">
-                                <group>
-                                    <group>
-                                        <field name="phone" widget="phone" string="Phone"/>
-                                        <field name="mobile" widget="phone" string="Parent Phone"/>
-                                        <field name="user_ids" invisible="1"/>
-                                        <field name="email" widget="email" context="{'gravatar_image': True}"
-                                               attrs="{'required': [('user_ids','!=', [])]}" string="Email"/>
-                                        <field name="active_lang_count" invisible="1"/>
-                                        <field name="lang" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}"
-                                               string="Language"/>
-                                    </group>
-                                    <group>
-                                        <field name="street" placeholder="Street..." class="o_address_street"/>
-                                        <field name="city" placeholder="City" class="o_address_city"/>
-                                        <field name="state_id" class="o_address_state" placeholder="State"
-                                               options="{'no_open': True, 'no_quick_create': True}"
-                                               context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
-                                        <field name="zip" placeholder="ZIP" class="o_address_zip"/>
-                                        <field name="country_id" placeholder="Country" class="o_address_country"
-                                               options='{"no_open": True, "no_create": True}'/>
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Academic Information">
-
-                                <group>
-                                    <group>
-                                        <field name="department_id" string="Department"
-                                               options='{"no_create": True, "no_quick_create": True}' required="1"/>
-                                    </group>
-                                    <group>
-                                        <field name="company_id" invisible="1"/>
-                                        <field name="academic_program_id" string="Academic Program"
-                                               domain="[('department_id', '=', department_id)]"
-                                               options='{"no_create": True, "no_quick_create": True}' required="1"/>
-                                        <field name="level" string="Academic Level" required="1"/>
-                                        <field name="section_id" string="Section" required="1"
-                                               domain="[('academic_program_id', '=', academic_program_id)]"
-                                               options='{"no_create": True, "no_quick_create": True}'/>
-                                    </group>
-                                </group>
-
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="view_sis_res_partner_filter" model="ir.ui.view">
-            <field name="name">view_sis_res_partner_filter</field>
-            <field name="model">res.partner</field>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="internal_reference" string="ID"/>
-                    <field name="name" string="name"/>
-                    <field name="email" string="Email"/>
-                    <field name="phone" string="Phone"/>
-                    <field name="mobile" string="Parent Phone"/>
-                    <separator/>
-                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
-                    <group expand="0" name="group_by" string="Group By">
-                        <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
-                        <filter name="group_section" string="Section" context="{'group_by': 'section_id'}"/>
-                        <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
-                        <filter name="group_level" string="Level" context="{'group_by': 'level'}"/>
-                        <filter name="group_academic_program" string="Academic Program"
-                                context="{'group_by': 'academic_program_id'}"/>
                     </group>
-                </search>
-            </field>
-        </record>
 
+                    <notebook>
+                        <page string="Contact Information">
+                            <group>
+                                <group>
+                                    <field name="phone" widget="phone" string="Phone"/>
+                                    <field name="mobile" widget="phone" string="Parent Phone"/>
+                                    <field name="user_ids" invisible="1"/>
+                                    <field name="email" widget="email" context="{'gravatar_image': True}"
+                                           attrs="{'required': [('user_ids','!=', [])]}" string="Email"/>
+                                    <field name="active_lang_count" invisible="1"/>
+                                    <field name="lang" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}"
+                                           string="Language"/>
+                                </group>
+                                <group>
+                                    <field name="street" placeholder="Street..." class="o_address_street"/>
+                                    <field name="city" placeholder="City" class="o_address_city"/>
+                                    <field name="state_id" class="o_address_state" placeholder="State"
+                                           options="{'no_open': True, 'no_quick_create': True}"
+                                           context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                    <field name="country_id" placeholder="Country" class="o_address_country"
+                                           options='{"no_open": True, "no_create": True}'/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Academic Information">
 
-        <record id="action_sis_student_views" model="ir.actions.act_window">
-            <field name="name">Students</field>
-            <field name="res_model">res.partner</field>
-            <field name="view_mode">tree,form,kanban</field>
-            <field name="domain">[('is_student', '=', True), ('company_id', 'in', allowed_company_ids)]</field>
-            <field name="context">{'default_is_student': True, 'default_company_id': allowed_company_ids[0]}</field>
-            <field name="search_view_id" ref="view_sis_res_partner_filter"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create new student!
-                </p>
-            </field>
-        </record>
+                            <group>
+                                <group>
+                                    <field name="department_id" string="Department"
+                                           options='{"no_create": True, "no_quick_create": True}' required="1"/>
+                                </group>
+                                <group>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="academic_program_id" string="Academic Program"
+                                           domain="[('department_id', '=', department_id)]"
+                                           options='{"no_create": True, "no_quick_create": True}' required="1"/>
+                                    <field name="level" string="Academic Level" required="1"/>
+                                    <field name="section_id" string="Section" required="1"
+                                           domain="[('academic_program_id', '=', academic_program_id)]"
+                                           options='{"no_create": True, "no_quick_create": True}'/>
+                                </group>
+                            </group>
 
-        <record id="student_action_tree_binding" model="ir.actions.act_window.view">
-            <field eval="1" name="sequence"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_sis_res_partner_tree"/>
-            <field name="act_window_id" ref="action_sis_student_views"/>
-        </record>
-        <record id="student_action_form_binding" model="ir.actions.act_window.view">
-            <field eval="1" name="sequence"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_sis_res_partner_form"/>
-            <field name="act_window_id" ref="action_sis_student_views"/>
-        </record>
+                        </page>
+                        <page string="Archive Lines">
+                            <field name="archive_line_ids">
+                                <tree create="false" edite="false" delete="false">
+                                    <field name="academic_year"/>
+                                    <field name="academic_program_id" optional="show"/>
+                                    <field name="level" optional="show"/>
+                                    <field name="state" optional="show"/>
+                                    <field name="total_grade" optional="show"/>
+                                    <field name="section_id" optional="hide"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
+    <record id="view_sis_res_partner_filter" model="ir.ui.view">
+        <field name="name">view_sis_res_partner_filter</field>
+        <field name="model">res.partner</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="internal_reference" string="ID"/>
+                <field name="name" string="name"/>
+                <field name="email" string="Email"/>
+                <field name="phone" string="Phone"/>
+                <field name="mobile" string="Parent Phone"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="group_department" string="Department" context="{'group_by': 'department_id'}"/>
+                    <filter name="group_section" string="Section" context="{'group_by': 'section_id'}"/>
+                    <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                    <filter name="group_level" string="Level" context="{'group_by': 'level'}"/>
+                    <filter name="group_academic_program" string="Academic Program"
+                            context="{'group_by': 'academic_program_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 
-    </data>
+    <record id="action_sis_student_views" model="ir.actions.act_window">
+        <field name="name">Students</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">[('is_student', '=', True), ('company_id', 'in', allowed_company_ids)]</field>
+        <field name="context">{'default_is_student': True, 'default_company_id': allowed_company_ids[0]}</field>
+        <field name="search_view_id" ref="view_sis_res_partner_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new student!
+            </p>
+        </field>
+    </record>
+
+    <record id="student_action_tree_binding" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_sis_res_partner_tree"/>
+        <field name="act_window_id" ref="action_sis_student_views"/>
+    </record>
+    <record id="student_action_form_binding" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_sis_res_partner_form"/>
+        <field name="act_window_id" ref="action_sis_student_views"/>
+    </record>
+
 </odoo>

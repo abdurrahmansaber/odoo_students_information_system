@@ -27,6 +27,7 @@
         'views/student_views.xml',
         'views/student_archive_views.xml',
         'views/section_views.xml',
+        'views/slide_channel_partner_views.xml',
 
         'views/sis_menus.xml',  # Last because referencing actions defined in previous files
     ],

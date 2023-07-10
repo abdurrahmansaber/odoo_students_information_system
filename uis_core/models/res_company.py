@@ -15,6 +15,8 @@ class ResCompany(models.Model):
     academic_year_start_date = fields.Date(default=fields.Date.today)
     academic_year_end_date = fields.Date()
     academic_year_number_of_semesters = fields.Integer(default=2)
+    minimum_subject_passing_percentage = fields.Float(defualt=0.5)
+    maximum_failed_subjects = fields.Integer(default=2)
 
     @api.constrains('code')
     def _check_code(self):
