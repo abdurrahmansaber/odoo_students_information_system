@@ -1,4 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_student_archive,student_archive,model_student_archive,,1,1,1,1
-access_student_archive_line,student_archive_line,model_student_archive_line,,1,1,1,1
+access_student_archive,student_archive,model_student_archive,,1,1,1,0
+access_student_archive_line,student_archive_line,model_student_archive_line,,1,1,1,0
+access_student_grade_archive,student_grade_archive,model_student_grade_archive,,1,1,1,0
 access_section,section,model_section,,1,1,1,1

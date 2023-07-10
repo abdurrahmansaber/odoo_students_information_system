@@ -31,5 +31,5 @@ class StudentArchiveLine(models.Model):
     level = fields.Char()
     state = fields.Char()
     total_grade = fields.Float()
-    course_ids = fields.Many2many('slide.channel', required=True, ondelete='restrict')
+    course_grade_archive_ids = fields.One2many('student.grade.archive', 'archive_line_id')
     section_id = fields.Char()

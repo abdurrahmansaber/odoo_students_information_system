@@ -18,6 +18,7 @@ class ResPartner(models.Model):
     academic_advisor_id = fields.Many2one('hr.employee', tracking=True)
     department_id = fields.Many2one(comodel_name='department', tracking=True)
     archive_line_ids = fields.One2many('student.archive.line', 'partner_id', tracking=True)
+    grade_archive_ids = fields.One2many('student.grade.archive', 'partner_id')
 
     level = fields.Selection(_get_level_selection, required=True,
                              tracking=True)
@@ -31,6 +32,7 @@ class ResPartner(models.Model):
     def create(self, vals_list):
         res = super().create(vals_list)
         res_users_obj = self.env['res.users']
+        slide_channel_obj = self.env['slide.channel']
         new_users = []
         for record in res.filtered('is_student'):
             new_users.append({
@@ -41,6 +43,11 @@ class ResPartner(models.Model):
                 'groups_id': [6, 0, self.env['ir.model.data']._xmlid_to_res_id('base.group_portal',
                                                                                raise_if_not_found=False)]
             })
+            applicable_courses = slide_channel_obj.search([('level', '=', record.level),
+                                                           ('academic_program_id', '=', record.academic_program_id.id)])
+            for course in applicable_courses:
+                course._action_add_members(record)
+
         res_users_obj.create(new_users)
 
         return res

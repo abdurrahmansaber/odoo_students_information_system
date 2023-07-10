@@ -13,7 +13,9 @@ class SlideChannelPartner(models.Model):
 
     lecture_attendance_count = fields.Integer()
     lectures_completion = fields.Float(compute="_compute_lectures_completion")
-    total_grade = fields.Float(compute='_compute_total_grade')
+    course_level = fields.Selection(related='channel_id.level', store=True)
+    state = fields.Boolean(compute='_compute_student_state')
+    total_grade = fields.Float(compute='_compute_total_grade', store=True)
     final_exam_grade = fields.Float()
     mid_semester_grade = fields.Float()
     oral_grade = fields.Float()
@@ -22,53 +24,11 @@ class SlideChannelPartner(models.Model):
     assignments_grade = fields.Float()
     final_exam_grade_submitted = fields.Boolean()
 
-    @api.onchange('final_exam_grade')
-    def _create_student_yearly_archive(self):
-        scp_obj = self.env['slide.channel.partner']
+    @api.onchange('final_exam_grade_submitted')
+    def _compute_student_state(self):
         for rec in self:
-            rec._origin.final_exam_grade_submitted = True
-            student_subjects = scp_obj.search([('partner_id', '=', rec.partner_id.id)])
-            if len(student_subjects.filtered(lambda ss: not ss.final_exam_grade_submitted)) == 0:
-                failed_subjects = student_subjects.filtered(
-                    lambda s: s.total_grade < (
-                                s.channel_id.total_grade * rec.channel_id.company_id.minimum_subject_passing_percentage))
-                state = (len(failed_subjects) <= rec.channel_id.company_id.maximum_failed_subjects)
-
-                # total_subjects_grade = sum(student_subjects.mapped('total_grade'))
-
-                vals = {
-                    'partner_id': rec.partner_id.id,
-                    'academic_year': rec.channel_id.company_id.academic_year_name,
-                    'academic_program_id': rec.partner_id.academic_program_id.id,
-                    'level': rec.partner_id.level,
-                    'state': 'pass' if state else 'fail',
-                    # 'total_grade': total_subjects_grade,
-                    'section_id': rec.partner_id.section_id.name,
-                    'academic_advisor_id': rec.partner_id.academic_advisor_id.id,
-                }
-
-                self.env['student.archive.line'].create(vals)
-                levels = [code for code, name in rec.channel_id.company_id.get_level_selection()]
-
-                if rec.partner_id.level == levels[len(levels) - 1]:
-                    vals = {
-                        'student_name': rec.partner_id.name,
-                        'company_id': rec.partner_id.company_id.name,
-                        'student_code': rec.partner_id.internal_reference,
-                        'national_id': rec.partner_id.national_id,
-                        'phone': rec.partner_id.phone,
-                        'email': rec.partner_id.email,
-                        'lang': rec.partner_id.lang,
-                        'street': rec.partner_id.street,
-                        'city': rec.partner_id.city,
-                        'state': rec.partner_id.state_id.name,
-                        'country': rec.partner_id.country_id.name,
-                        'line_ids': [(6, 0, rec.partner_id.archive_line_ids.ids)]
-                    }
-                    self.env['student.archive'].create(vals)
-                    # TODO: Apply necessary logic for graduates
-                else:
-                    rec.partner_id.level = levels[levels.index(rec.partner_id.level) + 1]
+            if rec.final_exam_grade_submitted:
+                rec.state = rec.total_grade >= (rec.channel_id.total_grade * rec.channel_id.company_id.minimum_subject_passing_percentage)
 
     @api.onchange('lecture_attendance_count')
     def _compute_lectures_completion(self):
@@ -85,10 +45,10 @@ class SlideChannelPartner(models.Model):
                   'project_grade')
     def _compute_total_grade(self):
         for rec in self:
-            rec.total_grade = rec.assignments_grade + rec.project_grade + rec.mid_semester_grade + rec.final_exam_grade + rec.oral_grade + rec.quizzes_total_grade
+            rec.total_grade = rec.assignments_grade + rec.project_grade + rec.mid_semester_grade + rec.final_exam_grade\
+                              + rec.oral_grade + rec.quizzes_total_grade
 
 
-# This is the course model , blame odoo for the ambiguity :)
 class SlideChannel(models.Model):
     _inherit = 'slide.channel'
 
@@ -139,6 +99,7 @@ class SlideChannel(models.Model):
             if self.env['slide.channel'].search_count(
                     [('code', '=', rec.code.strip().replace(' ', '')), ('id', '!=', rec.id)]):
                 raise UserError(_('Cannot create course with duplicated code'))
+
 
     # def action_channel_invite(self):
     #     self.ensure_one()

@@ -92,4 +92,21 @@
 
     </menuitem>
 
+    <record id="utm.menu_link_tracker_root" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+
+    <record id="website_slides.website_slides_menu_root" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+
+<!--    <record id="base.menu_management" model="ir.ui.menu">-->
+<!--    </record>-->
+
+
+
 </odoo>
