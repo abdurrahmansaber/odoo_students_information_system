@@ -1,10 +1,14 @@
 from odoo import http
 from odoo.http import request
+from odoo.exceptions import AccessError
 
 
 class OnboardingController(http.Controller):
     @http.route('/sis/user/info/<int:uid>', type='http', auth='user')
     def user_info(self, uid):
+        if request.session.uid != uid:
+            raise AccessError("Access Denied")
+
         user_id = request.env['res.users'].sudo().browse(uid)
         partner_id = user_id.partner_id
 
@@ -12,6 +16,7 @@ class OnboardingController(http.Controller):
             'name': partner_id.name,
             'phone': partner_id.phone,
             'email': partner_id.email,
+            'user_context': dict(request.env['res.users'].context_get()),
             'college': (
                 f'[{partner_id.company_id.code}] ' if partner_id.company_id.code else ""
             ) + partner_id.company_id.name,

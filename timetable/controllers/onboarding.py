@@ -1,11 +1,15 @@
 from odoo import http
 from odoo.http import request
+from odoo.exceptions import AccessError
 from datetime import date
 
 
 class OnboardingController(http.Controller):
     @http.route('/sis/teacher/timetable/<int:uid>', type='http', auth='user')
     def teacher_timetable(self, uid):
+        if request.session.uid != uid:
+            raise AccessError("Access Denied")
+
         semester = request.env['semester'].sudo().search([
             ('company_id', '=', request.env.company.id),
             ('start_date', '<=', date.today()),
@@ -56,6 +60,9 @@ class OnboardingController(http.Controller):
 
     @http.route('/sis/student/timetable/<int:uid>', type='http', auth='user')
     def student_timetable(self, uid):
+        if request.session.uid != uid:
+            raise AccessError("Access Denied")
+
         semester = request.env['semester'].sudo().search([
             ('company_id', '=', request.env.company.id),
             ('start_date', '<=', date.today()),

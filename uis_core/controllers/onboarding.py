@@ -28,7 +28,7 @@ def authenticate(self, db, login, password, base_location=None):
                 max_age=http.SESSION_LIFETIME, httponly=True
             )
         session_info = env['ir.http'].session_info()
-        return str({'session_id': request.session.sid, 'uid': session_info['uid']})
+        return str({'uid': session_info['uid']})
 
 
 Session.authenticate = authenticate
@@ -37,6 +37,9 @@ Session.authenticate = authenticate
 class OnboardingController(http.Controller):
     @http.route('/sis/teacher/courses/<int:uid>', type='http', auth='user')
     def teacher_courses(self, uid):
+        if request.session.uid != uid:
+            raise AccessError("Access Denied")
+
         user_id = request.env['res.users'].sudo().browse(uid)
 
         teacher_courses = {}
@@ -53,6 +56,8 @@ class OnboardingController(http.Controller):
                         'slide_category': dict(request.env['slide.slide'].sudo().fields_get(
                             allfields=['slide_category']
                         )['slide_category']['selection']).get(slide_id.slide_category),
+                        'is_attendance': slide_id.is_attendance,
+                        'website_published': slide_id.website_published,
                         'website_share_url': slide_id.website_share_url,
                         'video_url': slide_id.video_url,
                         'download': '%s/web/content/slide.slide/%s/binary_content?download=true' % (
@@ -74,6 +79,9 @@ class OnboardingController(http.Controller):
 
     @http.route('/sis/student/courses/<int:uid>', type='http', auth='user')
     def student_courses(self, uid):
+        if request.session.uid != uid:
+            raise AccessError("Access Denied")
+
         partner_id = request.env['res.users'].sudo().browse(uid).partner_id
 
         student_courses = {}
@@ -95,6 +103,7 @@ class OnboardingController(http.Controller):
                             'slide_category': dict(request.env['slide.slide'].sudo().fields_get(
                                 allfields=['slide_category']
                             )['slide_category']['selection']).get(slide_id.slide_category),
+                            'is_attendance': slide_id.is_attendance,
                             'website_share_url': slide_id.website_share_url,
                             'video_url': slide_id.video_url,
                             'download': '%s/web/content/slide.slide/%s/binary_content?download=true' % (
