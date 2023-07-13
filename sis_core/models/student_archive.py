@@ -4,9 +4,10 @@ from odoo import api, fields, models
 class StudentArchive(models.Model):
     _name = 'student.archive'
     _description = 'Student History'
+    _rec_name = 'student_name'
 
     student_name = fields.Char()
-    company_id = fields.Char()
+    company_id = fields.Many2one('res.company')
     student_code = fields.Char(help='unique internal id for students')
     national_id = fields.Char()
     phone = fields.Char()

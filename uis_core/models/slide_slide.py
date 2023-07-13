@@ -5,6 +5,7 @@ class SlidePartnerRelation(models.Model):
     _inherit = 'slide.slide.partner'
 
     def write(self, values):
+        res = super(SlidePartnerRelation, self).write(values)
         if 'completed' in values and self.slide_id.is_attendance:
             attended = self.env['slide.channel.partner'].search(
                 [('channel_id', '=', self.channel_id.id), ('partner_id', '=', self.partner_id.id)])
@@ -21,8 +22,7 @@ class SlidePartnerRelation(models.Model):
 
             if slides_completion_to_recompute:
                 slides_completion_to_recompute._recompute_completion()
-
-        return super(SlidePartnerRelation, self).write(values)
+        return res
 
     def _compute_attendance_complete_state(self):
         records = self.env['slide.slide.partner'].search([]).filtered(
@@ -56,3 +56,5 @@ class Slide(models.Model):
                         and slide.slide_category != 'quiz'
                         and not slide.question_ids
                 )
+
+

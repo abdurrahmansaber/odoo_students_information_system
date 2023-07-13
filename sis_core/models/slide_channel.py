@@ -15,13 +15,20 @@ class SlideChannel(models.Model):
         super(SlideChannel, self)._remove_membership(partner_ids)
 
     def _action_add_members(self, target_partners, **member_values):
+        super(SlideChannel, self)._action_add_members(target_partners, **member_values)
+
         grade_archive_ids = self.env['student.grade.archive'].search([('course_id', '=', self.id),
                                                                       ('partner_id', 'in', target_partners.ids),
                                                                       ('state', '=', 'pass')])
         if grade_archive_ids:
             raise ValidationError('This student has already passed this course!')
 
-        super(SlideChannel, self)._action_add_members(target_partners, **member_values)
+        for partner in target_partners:
+            if self:
+                self.env['slide.slide.partner'].create({
+                    'slide_id': self.slide_ids.filtered('is_attendance').id,
+                    'partner_id': partner.id
+                })
 
     def action_redirect_to_members(self, completed=False):
         """ Redirects to attendees of the course. If completed is True, a filter

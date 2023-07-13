@@ -7,14 +7,19 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
+                    <group>
+                        <field name="channel_id" string="Course" readonly="1"/>
+                        <field name="partner_id" string="Student" readonly="1" context="{'form_view_ref': 'sis_core.view_sis_res_partner_form'}"/>
+                    </group>
                     <group string="Grades">
-                        <field name="total_grade"/>
-                        <field name="final_exam_grade"/>
+                        <field name="total_grade" force_save="1"/>
+                        <field name="final_grade"/>
                         <field name="mid_semester_grade"/>
                         <field name="oral_grade"/>
                         <field name="quizzes_total_grade"/>
                         <field name="project_grade"/>
                         <field name="assignments_grade"/>
+                        <field name="final_exam_grade_submitted" invisible="1"/>
                     </group>
                 </sheet>
             </form>
@@ -29,6 +34,7 @@
 
             <xpath expr="//tree" position="attributes">
                 <attribute name="edit">false</attribute>
+                <attribute name="create">false</attribute>
             </xpath>
 
             <xpath expr="//field[@name='channel_id']" position="attributes">

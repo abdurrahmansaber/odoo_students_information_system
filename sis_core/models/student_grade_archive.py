@@ -11,7 +11,7 @@ class StudentGradeArchive(models.Model):
     course_id = fields.Many2one('slide.channel', readonly=True)
     level = fields.Char()
     archive_line_id = fields.Many2one('student.archive.line', readonly=True)
-    partner_id = fields.Many2one('res.partner', readonly=True, related='archive_line_id.partner_id', store=True)
+    partner_id = fields.Many2one('res.partner', readonly=True)
     total_course_grade = fields.Float(readonly=True)
     student_grade = fields.Float(readonly=True)
     state = fields.Char()

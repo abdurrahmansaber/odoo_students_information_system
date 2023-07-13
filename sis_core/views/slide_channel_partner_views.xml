@@ -3,7 +3,6 @@
 
     <record id="website_slides.slide_channel_partner_action" model="ir.actions.act_window">
         <field name="domain">[('channel_user_id', '=', uid),('partner_id.is_student', "=", True)]</field>
-        <field name="context">{'search_default_groupby_course_level': 1, 'search_default_groupby_student_level': 1, 'search_default_groupby_student' : 1}</field>
     </record>
 
     <record id="slide_channel_partner_view_search_add_groupby_levels" model="ir.ui.view">
